@@ -84,9 +84,6 @@ echo 'Starting confd...'
 sudo etcdctl setdir /docklet
 sudo bash -c 'confd > /var/log/confd-docklet.log 2>&1 &'
 
-export IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-echo "Done (available at $IP). Enjoy =)"
-
 # Starting server
 echo 'Starting webserver...'
 mkdir -p ~/go/src/github.com/keshavdv/docklet
@@ -97,6 +94,10 @@ cp -r /vagrant/* ~/go/src/github.com/keshavdv/docklet
 cd ~/go/src/github.com/keshavdv/docklet
 godep restore
 sudo bash -c 'GOPATH=~/go go run ~/go/src/github.com/keshavdv/docklet/main.go > /var/log/server-docklet.log 2>&1 &'
+
+# All done
+export IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+echo "Done (available at $IP). Enjoy =)"
 SCRIPT
 
 Vagrant.configure(2) do |config|
