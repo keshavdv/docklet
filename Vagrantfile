@@ -34,6 +34,50 @@ if [ ! -f /usr/bin/confd ]; then
   sudo wget –quiet https://github.com/kelseyhightower/confd/releases/download/v0.10.0/confd-0.10.0-linux-amd64 -O /usr/bin/confd
   sudo chmod +x /usr/bin/confd && sudo chmod 755 /usr/bin/confd
 fi
+
+# Configuring confd
+echo 'Configuring confd...'
+sudo mkdir -p /etc/confd/conf.d
+sudo mkdir -p /etc/confd/templates
+sudo bash -c 'cat << EOF > /etc/confd/confd.toml
+confdir = "/etc/confd"
+interval = 20
+backend = "etcd"
+prefix = "/"
+scheme = "http"
+verbose = true
+EOF'
+
+sudo bash -c 'cat << EOF > /etc/confd/conf.d/haproxy.toml
+[template]
+src = "haproxy.cfg.tmpl"
+dest = "/etc/haproxy/haproxy.cfg"
+keys = [
+        "/docklet"
+]
+reload_cmd = "echo restarting && /usr/sbin/service haproxy reload"
+EOF'
+
+sudo bash -c 'cat << EOF > /etc/confd/templates/haproxy.cfg.tmpl
+defaults
+  log     global
+  mode    http
+
+listen stats :1936
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+    stats auth admin:admin
+EOF'
+
+# Starting confd
+echo 'Starting confd...'
+sudo confd > /var/log/confd-docklet.log &
+
+echo 'Done. Enjoy =)'
+
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -41,6 +85,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.hostname = "docklet"
 
+  config.vm.network "public_network"
   config.vm.provision "shell", inline: $script
 
 end
