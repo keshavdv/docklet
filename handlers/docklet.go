@@ -13,7 +13,7 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 	machines := []string{"http://localhost:4001"}
 	client := etcd.NewClient(machines)
 
-	if _, err := client.Set("/foo", "bar", 0); err != nil {
+	if _, err := client.Set("/docklet", "bar", 0); err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed"})
 		returngit
 	}

@@ -77,7 +77,8 @@ echo 'Starting confd...'
 sudo etcdctl setdir /docklet
 sudo bash -c 'confd > /var/log/confd-docklet.log 2>&1 &'
 
-echo 'Done. Enjoy =)'
+export IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+echo "Done (available at $IP). Enjoy =)"
 
 SCRIPT
 
