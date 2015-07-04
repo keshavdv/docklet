@@ -53,7 +53,7 @@ sudo bash -c 'cat << EOF > /etc/confd/conf.d/haproxy.toml
 src = "haproxy.cfg.tmpl"
 dest = "/etc/haproxy/haproxy.cfg"
 keys = [
-        "/docklet"
+        "/docklet/"
 ]
 reload_cmd = "echo restarting && /usr/sbin/service haproxy reload"
 EOF'
@@ -74,7 +74,8 @@ EOF'
 
 # Starting confd
 echo 'Starting confd...'
-sudo confd > /var/log/confd-docklet.log &
+sudo etcdctl setdir /docklet
+sudo bash -c 'confd > /var/log/confd-docklet.log 2>&1 &'
 
 echo 'Done. Enjoy =)'
 
