@@ -15,7 +15,7 @@ fi
 echo 'Installing etcd...'
 if [ ! -f /usr/bin/etcd ]; then
   cd /usr/local/src/
-  sudo wget –quiet https://github.com/coreos/etcd/releases/download/$ETCD/etcd-$ETCD-linux-amd64.tar.gz
+  sudo wget -q https://github.com/coreos/etcd/releases/download/$ETCD/etcd-$ETCD-linux-amd64.tar.gz
   sudo tar -xzf etcd-$ETCD-linux-amd64.tar.gz && cd etcd-$ETCD-linux-amd64/ && sudo cp etc* /usr/bin
   sudo killall etcd 2> /dev/null
   sudo etcd --listen-client-urls 'http://0.0.0.0:2379,http://0.0.0.0:4001' --advertise-client-urls 'http://0.0.0.0:2379,http://0.0.0.0:4001' 2>&1 &
@@ -31,7 +31,7 @@ fi
 # Installing confd
 echo 'Installing confd...'
 if [ ! -f /usr/bin/confd ]; then
-  sudo wget –quiet https://github.com/kelseyhightower/confd/releases/download/v0.10.0/confd-0.10.0-linux-amd64 -O /usr/bin/confd
+  sudo wget -q -O /usr/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.10.0/confd-0.10.0-linux-amd64 
   sudo chmod +x /usr/bin/confd && sudo chmod 755 /usr/bin/confd
 fi
 SCRIPT
