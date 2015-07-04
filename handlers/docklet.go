@@ -15,7 +15,7 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 
 	if _, err := client.Set("/docklet", "bar", 0); err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed"})
-		returngit
+		return
 	}
 
 	r.JSON(w, http.StatusOK, map[string]string{"status": "launched"})

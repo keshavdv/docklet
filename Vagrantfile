@@ -5,7 +5,7 @@ $script = <<SCRIPT
 export ETCD=v2.0.13
 
 # Installing docker
-echo 'Installing docker...'
+echo 'Installing docker...'go
 if [ ! -f /usr/bin/docker ]; then
   apt-get update && apt-get install -y wget linux-image-generic-lts-trusty
   wget -qO- https://get.docker.com/ | sh
@@ -26,6 +26,13 @@ echo 'Installing haproxy...'
 if [ ! -f /usr/sbin/haproxy ]; then
   add-apt-repository ppa:vbernat/haproxy-1.5
   apt-get update && apt-get install -y haproxy
+fi
+
+# Installing go
+echo 'Installing go...'
+if [ ! -f /usr/bin/go ]; then
+  sudo add-apt-repository -y ppa:evarlast/golang1.4
+  sudo apt-get update && sudo apt-get install -y golang
 fi
 
 # Installing confd
@@ -80,9 +87,24 @@ sudo bash -c 'confd > /var/log/confd-docklet.log 2>&1 &'
 export IP=$(/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 echo "Done (available at $IP). Enjoy =)"
 
+# Starting server
+echo 'Starting webserver...'
+mkdir -p ~/go/src/github.com/keshavdv/docklet
+export GOPATH=~/go
+export PATH=~/go/bin:$PATH
+go get github.com/tools/godep
+cp -r /vagrant/* ~/go/src/github.com/keshavdv/docklet
+cd ~/go/src/github.com/keshavdv/docklet
+godep restore
+sudo bash -c 'GOPATH=~/go go run ~/go/src/github.com/keshavdv/docklet/main.go > /var/log/server-docklet.log 2>&1 &'
 SCRIPT
 
 Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 1
+  end
 
   config.vm.box = "ubuntu/trusty64"
   config.vm.hostname = "docklet"
