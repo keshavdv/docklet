@@ -90,9 +90,10 @@ mkdir -p ~/go/src/github.com/keshavdv/docklet
 export GOPATH=~/go
 export PATH=~/go/bin:$PATH
 go get github.com/tools/godep
-cp -r /vagrant/* ~/go/src/github.com/keshavdv/docklet
+ln -s /vagrant/* ~/go/src/github.com/keshavdv/docklet
 cd ~/go/src/github.com/keshavdv/docklet
 godep restore
+sudo killall go 2> /dev/null
 sudo bash -c 'GOPATH=~/go go run ~/go/src/github.com/keshavdv/docklet/main.go > /var/log/server-docklet.log 2>&1 &'
 
 # All done
