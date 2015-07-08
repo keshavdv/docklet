@@ -41,30 +41,35 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// start container
+	// create container
 	container, err := docker_client.CreateContainer(docker.CreateContainerOptions{Config: &docker.Config{Cmd: []string{"/bin/sh", "-c", "sleep 10000000"}, Image: image}})
 	if err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed", "msg": err.Error()})
 		return
 	}
+
+	// start container
 	log.Println(fmt.Sprintf("starting container (%s) from image (%s)", container.ID, image))
-	err = docker_client.StartContainer(container.ID, &docker.HostConfig{})
+	err = docker_client.StartContainer(container.ID, &docker.HostConfig{PublishAllPorts: true})
 	if err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed", "msg": err.Error()})
 		return
 	}
 
-	// inspect container to find exposed ports
+	// inspect container to find what host ports are exposed
 	container_info, err := docker_client.InspectContainer(container.ID)
 	if err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed", "msg": err.Error()})
 		return
 	}
-	log.Println(container_info.Config.ExposedPorts)
+	log.Println(container_info.NetworkSettings.Ports)
+	for port, binding := range container_info.NetworkSettings.Ports {
+		log.Println(port)
+		log.Println(binding[0].HostIP)
+		log.Println(binding[0].HostPort)
+	}
 
-	// create mapping for each exposed port
-
-	// TODO: update etcd for confd
+	// TODO: update etcd for confd with port mappings
 
 	// return all the relevant bits
 	r.JSON(w, http.StatusOK, map[string]string{"status": "launched"})
