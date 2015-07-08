@@ -10,6 +10,7 @@ import (
 	"github.com/unrolled/render"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/context"
+	"bytes"
 )
 
 
@@ -35,6 +36,37 @@ func init() {
 func Home(w http.ResponseWriter, req *http.Request) {
 	r := context.Get(req, "Render").(*render.Render)
 	r.HTML(w, http.StatusOK, "index", nil)
+}
+
+func Build(w http.ResponseWriter, req *http.Request) {
+	// TODO: handle Dockerfile builds
+}
+
+func Pull(w http.ResponseWriter, req *http.Request) {
+	r := context.Get(req, "Render").(*render.Render)
+
+	image := req.URL.Query().Get("image")
+	if image == "" {
+		r.JSON(w, http.StatusBadRequest, map[string]string{"status": "invalid", "msg": "image must be specified"})
+		return
+	}
+
+	var buf bytes.Buffer
+	buf.Reset()
+	docker_client.PullImage(docker.PullImageOptions{Repository: image, OutputStream: &buf}, docker.AuthConfiguration{})
+	log.Println(buf.String())
+}
+
+func Create(w http.ResponseWriter, req *http.Request) {
+
+}
+
+func Inspect(w http.ResponseWriter, req *http.Request) {
+
+}
+
+func Status(w http.ResponseWriter, req *http.Request) {
+	// Status of long running tasks like pull/build
 }
 
 func Launch(w http.ResponseWriter, req *http.Request) {

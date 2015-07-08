@@ -11,6 +11,8 @@ func API() *mux.Router {
 
 	m.HandleFunc("/", handlers.Home)
 	m.HandleFunc("/version", handlers.GetAPIVersion)
+
+	m.HandleFunc("/pull", handlers.Pull)
 	m.HandleFunc("/launch", handlers.Launch)
 	return m
 }
