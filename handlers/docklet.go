@@ -32,6 +32,11 @@ func init() {
 	}
 }
 
+func Home(w http.ResponseWriter, req *http.Request) {
+	r := context.Get(req, "Render").(*render.Render)
+	r.HTML(w, http.StatusOK, "index", nil)
+}
+
 func Launch(w http.ResponseWriter, req *http.Request) {
 	r := context.Get(req, "Render").(*render.Render)
 
@@ -42,7 +47,8 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// create container
-	container, err := docker_client.CreateContainer(docker.CreateContainerOptions{Config: &docker.Config{Cmd: []string{"/bin/sh", "-c", "sleep 10000000"}, Image: image}})
+	// TODO: add cmd config if passed in
+	container, err := docker_client.CreateContainer(docker.CreateContainerOptions{Config: &docker.Config{Image: image}})
 	if err != nil {
 		r.JSON(w, http.StatusInternalServerError, map[string]string{"status": "failed", "msg": err.Error()})
 		return

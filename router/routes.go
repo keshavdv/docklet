@@ -9,6 +9,7 @@ import (
 func API() *mux.Router {
 	m := mux.NewRouter()
 
+	m.HandleFunc("/", handlers.Home)
 	m.HandleFunc("/version", handlers.GetAPIVersion)
 	m.HandleFunc("/launch", handlers.Launch)
 	return m
