@@ -1,0 +1,31 @@
+{
+  "name": "Docklet",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "harmony": true
+        }
+      ]
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Keshav Varma",
+  "license": "MIT",
+  "homepage": "https://github.com/olebedev/go-react-example",
+  "dependencies": {
+    "browserify": "*",
+    "react": "*",
+    "react-async": "*",
+    "react-router-component": "*",
+    "fluxxor": "*",
+    "reactify": "*",
+    "superagent": "*"
+  }
+}
