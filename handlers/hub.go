@@ -21,6 +21,7 @@ type hub struct {
 
 var Hub = hub{
 	broadcast:   make(chan []byte),
+	emit:        make(chan message),
 	register:    make(chan *connection),
 	unregister:  make(chan *connection),
 	connections: make(map[*connection]bool),
@@ -38,18 +39,18 @@ func (h *hub) Run() {
 			}
 		case m := <-h.emit:
 			select {
-				case m.conn.send <- m.data:
-				default:
-					close(m.conn.send)
-					delete(h.connections, m.conn)
+			case m.conn.send <- m.data:
+			default:
+				close(m.conn.send)
+				delete(h.connections, m.conn)
 			}
 		case m := <-h.broadcast:
 			for c := range h.connections {
 				select {
-					case c.send <- m:
-					default:
-						close(c.send)
-						delete(h.connections, c)
+				case c.send <- m:
+				default:
+					close(c.send)
+					delete(h.connections, c)
 				}
 			}
 		}

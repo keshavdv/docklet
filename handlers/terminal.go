@@ -1,17 +1,17 @@
 package handlers
 
 import (
+	"bufio"
 	"fmt"
+	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/context"
 	"github.com/gorilla/websocket"
 	"github.com/unrolled/render"
+	"io"
 	"log"
 	"net/http"
-	"time"
-	"io"
-	"github.com/fsouza/go-dockerclient"
-	"bufio"
 	"os"
+	"time"
 )
 
 func Attach(w http.ResponseWriter, req *http.Request) {
@@ -63,12 +63,9 @@ func (c *connection) readPump(writer io.Writer) {
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		_, message, err := c.ws.ReadMessage()
-		fmt.Println(message)
 		if err != nil {
 			break
 		}
-//		Hub.broadcast <- message
-		fmt.Println("here")
 		writer.Write(message)
 	}
 }
@@ -118,9 +115,8 @@ func CreateTerminalServer(w http.ResponseWriter, r *http.Request) {
 	c := &connection{send: make(chan []byte, 256), ws: ws}
 	Hub.register <- c
 
-
 	go c.writePump()
-	attachToContainer("e", c);
+	attachToContainer("e41e5d77750a", c)
 
 }
 
@@ -155,27 +151,12 @@ func attachToContainer(containerId string, c *connection) {
 		scanner.Split(bufio.ScanBytes)
 		for scanner.Scan() {
 
-			fmt.Println("scanning")
-
-//			Hub.emit <- message{data: []byte(scanner.Text()), conn: c}
-
-//			if so != nil {
-//
-//				err := so.Emit("output", scanner.Text())
-//				if err != nil {
-//					return
-//				}
-//			}
+			Hub.emit <- message{data: []byte(scanner.Text()), conn: c}
 		}
 		if err := scanner.Err(); err != nil {
 			fmt.Fprintln(os.Stderr, "There was an error with the scanner in attached container", err)
 		}
 	}(containerOutR, c)
 
-//	c.readPump(containerInW)
-
-//	so.On("input", func(msg string) {
-//		containerInW.Write([]byte(msg))
-//	})
-
+	c.readPump(containerInW)
 }
