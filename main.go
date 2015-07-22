@@ -20,5 +20,5 @@ func main() {
 	n.Use(renderer)
 	n.UseHandler(router.API())
 
-	n.Run(":3001")
+	n.Run(":3000")
 }

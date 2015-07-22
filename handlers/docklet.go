@@ -1,19 +1,17 @@
 package handlers
 
 import (
-	"net/http"
-	"os"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
 	"bytes"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/unrolled/render"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/context"
-	"bytes"
+	"github.com/unrolled/render"
 )
-
 
 var docker_client *docker.Client
 var etcd_client *etcd.Client

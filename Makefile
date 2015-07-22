@@ -9,4 +9,4 @@ fmt:
 	go fmt ./...
 
 run: bundle fmt
-	reflex -g '*.go' -g '*.html' -g '*.tmpl' -g '*.js' -g '*.css' -R '^node_modules/' -s -- go run main.go
+	reflex --decoration=fancy -c reflex.conf
