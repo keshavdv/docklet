@@ -3,7 +3,7 @@
  */
 
 window.onload = function() {
-    var socket = io(location.protocol + '//' + window.location.host,{path: '/terminal-ws?id=93a7eaccb953'});
+    var socket = io(location.protocol + '//' + window.location.host,{path: '/terminal-ws', query: {id: window.id}});
     socket.on('connect', function() {
         var term = new Terminal({
             cols: 80,

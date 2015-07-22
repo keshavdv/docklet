@@ -12,11 +12,13 @@ func API() *mux.Router {
 	m.HandleFunc("/", handlers.Home)
 	m.HandleFunc("/version", handlers.GetAPIVersion)
 
-	m.HandleFunc("/pull", handlers.Pull)
-	m.HandleFunc("/launch", handlers.Launch)
+	m.HandleFunc("/status", handlers.Status)
+	m.HandleFunc("/create", handlers.Create)
+	m.HandleFunc("/inspect", handlers.Inspect)
+	m.HandleFunc("/start", handlers.Start)
 	m.HandleFunc("/terminal", handlers.Attach)
 
-	m.Handle("/terminal-ws", handlers.CreateTerminalServer())
+	m.Handle("/terminal-ws/", handlers.CreateTerminalServer())
 
 	return m
 }

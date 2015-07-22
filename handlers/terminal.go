@@ -13,9 +13,19 @@ import (
 	"os"
 )
 
+type attachOpts struct {
+	Id string
+}
+
 func Attach(w http.ResponseWriter, req *http.Request) {
 	r := context.Get(req, "Render").(*render.Render)
-	r.HTML(w, http.StatusOK, "terminal", nil)
+	id := req.URL.Query().Get("id")
+	if len(id) != 0 {
+		r.HTML(w, http.StatusOK, "terminal", &attachOpts{Id: id})
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
 }
 
 func CreateTerminalServer() *socketio.Server {
