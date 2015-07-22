@@ -41,6 +41,7 @@ var upgrader = websocket.Upgrader{
 type message struct {
 	data []byte
 	conn *connection
+	quit chan bool
 }
 
 // connection is an middleman between the websocket connection and the hub.
@@ -138,6 +139,8 @@ func attachToContainer(containerId string, c *connection) {
 		RawTerminal:  true,
 	})
 
+	quit := make(chan bool)
+
 	go func() {
 
 		defer func() {
@@ -150,8 +153,12 @@ func attachToContainer(containerId string, c *connection) {
 		scanner := bufio.NewScanner(containerOutR)
 		scanner.Split(bufio.ScanBytes)
 		for scanner.Scan() {
-
-			Hub.emit <- message{data: []byte(scanner.Text()), conn: c}
+			select {
+				case <- quit:
+					return
+				default:
+					Hub.emit <- message{data: []byte(scanner.Text()), conn: c, quit: quit}
+			}
 		}
 		if err := scanner.Err(); err != nil {
 			fmt.Fprintln(os.Stderr, "There was an error with the scanner in attached container", err)
