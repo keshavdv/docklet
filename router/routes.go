@@ -16,7 +16,7 @@ func API() *mux.Router {
 	m.HandleFunc("/launch", handlers.Launch)
 	m.HandleFunc("/terminal", handlers.Attach)
 
-	m.Handle("/terminal-ws", handlers.CreateTerminalServer())
+	m.HandleFunc("/terminal-ws", handlers.CreateTerminalServer)
 
 	return m
 }
