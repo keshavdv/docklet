@@ -138,7 +138,7 @@ func attachToContainer(containerId string, c *connection) {
 		RawTerminal:  true,
 	})
 
-	go func(reader io.Reader, c *connection) {
+	go func() {
 
 		defer func() {
 			containerOutR.Close()
@@ -147,7 +147,7 @@ func attachToContainer(containerId string, c *connection) {
 			containerInW.Close()
 		}()
 
-		scanner := bufio.NewScanner(reader)
+		scanner := bufio.NewScanner(containerOutR)
 		scanner.Split(bufio.ScanBytes)
 		for scanner.Scan() {
 
@@ -156,7 +156,7 @@ func attachToContainer(containerId string, c *connection) {
 		if err := scanner.Err(); err != nil {
 			fmt.Fprintln(os.Stderr, "There was an error with the scanner in attached container", err)
 		}
-	}(containerOutR, c)
+	}()
 
 	c.readPump(containerInW)
 }
