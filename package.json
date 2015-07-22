@@ -21,11 +21,11 @@
   "homepage": "https://github.com/olebedev/go-react-example",
   "dependencies": {
     "browserify": "*",
+    "fluxxor": "*",
+    "gulp": "^3.9.0",
     "react": "*",
     "react-async": "*",
     "react-router-component": "*",
-    "fluxxor": "*",
-    "reactify": "*",
-    "superagent": "*"
+    "reactify": "*"
   }
 }

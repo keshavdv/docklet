@@ -6,11 +6,10 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/meatballhat/negroni-logrus"
 
-	"github.com/keshavdv/docklet/router"
 	"github.com/keshavdv/docklet/context"
+	"github.com/keshavdv/docklet/router"
 	"github.com/unrolled/render"
 )
-
 
 func main() {
 	n := negroni.New()
@@ -21,5 +20,5 @@ func main() {
 	n.Use(renderer)
 	n.UseHandler(router.API())
 
-	n.Run(":3000")
+	n.Run(":3001")
 }

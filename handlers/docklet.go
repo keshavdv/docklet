@@ -1,18 +1,17 @@
 package handlers
 
 import (
-	"net/http"
-	"os"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
+	"bytes"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/unrolled/render"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/context"
-	"bytes"
+	"github.com/unrolled/render"
 )
-
 
 var docker_client *docker.Client
 var etcd_client *etcd.Client
@@ -58,7 +57,8 @@ func Pull(w http.ResponseWriter, req *http.Request) {
 }
 
 func Create(w http.ResponseWriter, req *http.Request) {
-
+	// if image not available, call pull, return some job id
+	// create container, return id
 }
 
 func Inspect(w http.ResponseWriter, req *http.Request) {
@@ -112,4 +112,3 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 	// return all the relevant bits
 	r.JSON(w, http.StatusOK, map[string]string{"status": "launched"})
 }
-

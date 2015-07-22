@@ -6,5 +6,5 @@ Coming soon
 
 Use fresh to live reload code
 
-    go get github.com/pilu/fresh
-    fresh
+    go get github.com/cespare/reflex
+    make run
