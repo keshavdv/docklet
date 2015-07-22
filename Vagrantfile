@@ -5,7 +5,7 @@ $script = <<SCRIPT
 export ETCD=v2.0.13
 
 # Installing docker
-echo 'Installing docker...'go
+echo 'Installing docker...'
 if [ ! -f /usr/bin/docker ]; then
   apt-get update && apt-get install -y wget linux-image-generic-lts-trusty
   wget -qO- https://get.docker.com/ | sh

@@ -112,4 +112,3 @@ func Launch(w http.ResponseWriter, req *http.Request) {
 	// return all the relevant bits
 	r.JSON(w, http.StatusOK, map[string]string{"status": "launched"})
 }
-
