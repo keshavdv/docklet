@@ -7,6 +7,7 @@ import (
 	"github.com/meatballhat/negroni-logrus"
 
 	"github.com/keshavdv/docklet/context"
+	"github.com/keshavdv/docklet/handlers"
 	"github.com/keshavdv/docklet/router"
 	"github.com/unrolled/render"
 )
@@ -20,5 +21,6 @@ func main() {
 	n.Use(renderer)
 	n.UseHandler(router.API())
 
+	go handlers.Hub.Run()
 	n.Run(":3000")
 }

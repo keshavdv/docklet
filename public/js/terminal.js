@@ -2,9 +2,10 @@
  * Created by satyakb on 7/19/15.
  */
 
-window.onload = function() {
-    var socket = io(location.protocol + '//' + window.location.host,{path: '/terminal-ws', query: {id: window.id}});
-    socket.on('connect', function() {
+$(function() {
+    var conn;
+
+    function launchTerminal() {
         var term = new Terminal({
             cols: 80,
             rows: 40,
@@ -14,21 +15,28 @@ window.onload = function() {
             cursorBlink: false
         });
         term.on('data', function(data) {
-            // console.log('[CLIENT]', data);
-            //term.write(data);
-            socket.emit('input', data);
+            conn.send(data);
         });
         term.on('title', function(title) {
             document.title = title;
         });
         term.open(document.body);
         term.write('\x1b[31mWelcome to term.js!\x1b[m\r\n');
-        socket.on('output', function(data) {
-            // console.log('[SERVER]', data);
-            term.write(data);
-        });
-        socket.on('disconnect', function() {
+        conn.onmessage = function(evt) {
+            term.write(evt.data);
+        }
+        conn.onclose = function(evt) {
             term.destroy();
-        });
-    });
-};
+        }
+    }
+
+    if (window["WebSocket"]) {
+        conn = new WebSocket("ws://" + window.location.host + "/terminal-ws?id=" + window.id);
+        launchTerminal();
+    } else {
+        throw new Error('Your browser does not support WebSockets.');
+    }
+
+
+
+});
