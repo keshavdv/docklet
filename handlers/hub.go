@@ -38,11 +38,15 @@ func (h *hub) Run() {
 				close(c.send)
 			}
 		case m := <-h.emit:
-			select {
-			case m.conn.send <- m.data:
-			default:
-				close(m.conn.send)
-				delete(h.connections, m.conn)
+			if _, ok := h.connections[m.conn]; ok {
+				select {
+					case m.conn.send <- m.data:
+					default:
+						close(m.conn.send)
+						delete(h.connections, m.conn)
+				}
+			} else {
+				m.quit <- true
 			}
 		case m := <-h.broadcast:
 			for c := range h.connections {
