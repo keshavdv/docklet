@@ -26,7 +26,6 @@ func Attach(w http.ResponseWriter, req *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
-
 }
 
 const (
@@ -112,12 +111,19 @@ func (c *connection) writePump() {
 }
 
 // serverWs handles websocket requests from the peer.
-func CreateTerminalServer(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+func CreateTerminalServer(w http.ResponseWriter, req *http.Request) {
+
+	id := req.URL.Query().Get("id")
+	if len(id) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if req.Method != "GET" {
 		http.Error(w, "Method not allowed", 405)
 		return
 	}
-	ws, err := upgrader.Upgrade(w, r, nil)
+	ws, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
 		log.Println(err)
 		return
@@ -126,7 +132,7 @@ func CreateTerminalServer(w http.ResponseWriter, r *http.Request) {
 	Hub.register <- c
 
 	go c.writePump()
-	attachToContainer("e41e5d77750a", c)
+	attachToContainer(id, c)
 
 }
 

@@ -100,7 +100,7 @@ func Create(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	container, err := docker_client.CreateContainer(docker.CreateContainerOptions{Config: &docker.Config{Image: image}})
+	container, err := docker_client.CreateContainer(docker.CreateContainerOptions{Config: &docker.Config{OpenStdin: true, StdinOnce: true, AttachStdin: true, AttachStderr: true, AttachStdout: true, Image: image, Cmd: []string{"/bin/bash"}, Tty: true}})
 	if err != nil {
 		if err == docker.ErrNoSuchImage {
 			// attempt to pul
