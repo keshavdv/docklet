@@ -1,16 +1,16 @@
 package handlers
 
 import (
-	"github.com/googollee/go-socket.io"
-	"log"
-	"io"
-	"github.com/fsouza/go-dockerclient"
-	"fmt"
 	"bufio"
-	"os"
-	"net/http"
+	"fmt"
+	"github.com/fsouza/go-dockerclient"
+	"github.com/googollee/go-socket.io"
 	"github.com/gorilla/context"
 	"github.com/unrolled/render"
+	"io"
+	"log"
+	"net/http"
+	"os"
 )
 
 func Attach(w http.ResponseWriter, req *http.Request) {
@@ -45,16 +45,16 @@ func attachToContainer(so socketio.Socket, containerId string) {
 	containerIn, containerInW := io.Pipe()
 
 	go docker_client.AttachToContainer(docker.AttachToContainerOptions{
-		Logs: true,
-		Stream: true,
-		Stdin: true,
-		Stdout: true,
-		Stderr: true,
-		Container: containerId,
-		InputStream: containerIn,
+		Logs:         true,
+		Stream:       true,
+		Stdin:        true,
+		Stdout:       true,
+		Stderr:       true,
+		Container:    containerId,
+		InputStream:  containerIn,
 		OutputStream: containerOut,
-		ErrorStream: containerOut,
-		RawTerminal: true,
+		ErrorStream:  containerOut,
+		RawTerminal:  true,
 	})
 
 	go func(reader io.Reader, so socketio.Socket) {
