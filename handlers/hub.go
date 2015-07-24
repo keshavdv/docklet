@@ -34,16 +34,17 @@ func (h *hub) Run() {
 			h.connections[c] = true
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
+				docker_client.StopContainer(c.containerID, 0)
 				delete(h.connections, c)
 				close(c.send)
 			}
 		case m := <-h.emit:
 			if _, ok := h.connections[m.conn]; ok {
 				select {
-					case m.conn.send <- m.data:
-					default:
-						close(m.conn.send)
-						delete(h.connections, m.conn)
+				case m.conn.send <- m.data:
+				default:
+					close(m.conn.send)
+					delete(h.connections, m.conn)
 				}
 			} else {
 				m.quit <- true

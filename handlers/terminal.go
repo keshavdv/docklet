@@ -60,6 +60,8 @@ type connection struct {
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+
+	containerID string
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -129,7 +131,7 @@ func CreateTerminalServer(w http.ResponseWriter, req *http.Request) {
 		log.Println(err)
 		return
 	}
-	c := &connection{send: make(chan []byte, 256), ws: ws}
+	c := &connection{send: make(chan []byte, 256), ws: ws, containerID: id}
 	Hub.register <- c
 
 	go c.writePump()
@@ -170,10 +172,10 @@ func attachToContainer(containerId string, c *connection) {
 		scanner.Split(bufio.ScanBytes)
 		for scanner.Scan() {
 			select {
-				case <- quit:
-					return
-				default:
-					Hub.emit <- message{data: []byte(scanner.Text()), conn: c, quit: quit}
+			case <-quit:
+				return
+			default:
+				Hub.emit <- message{data: []byte(scanner.Text()), conn: c, quit: quit}
 			}
 		}
 		if err := scanner.Err(); err != nil {
