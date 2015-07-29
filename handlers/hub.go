@@ -34,7 +34,7 @@ func (h *hub) Run() {
 			h.connections[c] = true
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
-				docker_client.StopContainer(c.containerID, 0)
+				go docker_client.StopContainer(c.containerID, 0)
 				delete(h.connections, c)
 				close(c.send)
 			}

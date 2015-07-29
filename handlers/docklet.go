@@ -53,7 +53,6 @@ func createContainer(image string, cmd []string) (*docker.Container, error) {
 		docker.CreateContainerOptions{
 			Config: &docker.Config{
 				OpenStdin:    true,
-				StdinOnce:    true,
 				AttachStdin:  true,
 				AttachStderr: true,
 				AttachStdout: true,

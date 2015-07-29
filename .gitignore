@@ -30,3 +30,5 @@ docklet.iml
 tmp/
 .vagrant/
 node_modules/
+
+public/js/bundle.js

@@ -9,7 +9,7 @@ html, body {
     min-height: 500px;
     position: relative;
     z-index: 4;
-    background-image: linear-gradient(-180deg,#24b8eb 4%,#218cf4 100%);
+    background-image: linear-gradient(540deg,#24b8eb 4%,#218cf4 100%);
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -47,4 +47,10 @@ img.logo {
     font-size: 4rem;
     display: inline-block;
     vertical-align:middle
+}
+
+#terminal-frame {
+    height: 400px;
+    width: 800px;
+    border: none;
 }
